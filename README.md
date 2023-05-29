@@ -1,9 +1,11 @@
-# SRC-721 Composable NFT Specification
-
-Stamps are very expensive and there needs to be an inexpensive way for users to mint good resolution composable NFTs (like 10k pfp projects).  SRC-721 specifies how to store all the art for a given collection as layers using the STAMPS protocol and have the user mint a small JSON file referencing data that was already stored on chain, in order to create an NFT composed from the aformentioned layers. By storing the layers individually it is possible to significantly reduce file size by using techniques like indexed color pallets for each layer.  By stacking the images up it is possible to create a high quality visually appealing final product.
+# SRC-721 NFT Collection Specification
 
 ## Introduction
+Stamps are very expensive and there needs to be an inexpensive way for users to mint higher resolution composable NFTs (like 10k pfp projects).  SRC-721 specifies how to store all the art for a given collection as layers using the STAMPS protocol and have the user mint a small JSON file referencing data that was already stored on chain, in order to create an NFT composed from the aformentioned layers. By storing the layers individually it is possible to significantly reduce file size by using techniques like indexed color pallets for each layer.  By stacking the images up it is possible to create a high quality visually appealing final product.  By ensuring the user has to store less than 100 bytes on chain, the mint cost for this higher resolution NFT is significantly reduced.
 
+Since the Stamps protocol is under active development and changes will occur causing reindexing of Stamp ID's this specification uses counterparty asset ID's to ensure that inevitable changes to the Stamps protocol do not impact asset references of deployed SRC-721 collections.  
+
+## Requirements
 SRC-721 transactions must conform to these **required** fields or the transaction will not be considered a valid SRC-721 transaction. Fields labeled optional can be omitted when not used.
 
 ### DEPLOY
@@ -64,11 +66,11 @@ SRC-721 transactions must conform to these **required** fields or the transactio
 ```
 
 ### MINT a single item (not part of a collection)
+It may be desireable to mint a single NFT (that is not part of a collection) based on various on chain assets.  This can be done by omitting the symbol field and using counterparty asset IDs instead of index's
 ```
 {
     "p": "src-721",
     "op": "mint",
-    "symbol": "",
     "ts":["A12430899936789156000", .., "A17140023175661332000"]    
                         // an array with x length wherein each item
                         // represents the CP asset ID 
