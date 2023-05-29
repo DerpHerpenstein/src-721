@@ -94,7 +94,7 @@ SRC-721 transactions are valid counterparty assets and can be use as such.
 4. Only numeric values are allowed in the "max", "lim" fields
 5. Other Qualifications:
     - CP Asset must be locked, and multisig dust assigned to qualified burn address For more details on "KeyBurn" see: https://github.com/mikeinspace/stamps/blob/main/Key-Burn.md
-    - CP Asset for deploy muse be value 1, nondivisible
+    - CP Asset for deploy must be value 1, nondivisible
     - CP Asset value for mint must be less than or equal to lim
     - not case sensitive DOGE=doge
     - max lim amount: uint64_max 18,446,744,073,709,551,615 (**commaas not allowed**, here for readability only)
