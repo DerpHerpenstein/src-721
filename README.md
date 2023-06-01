@@ -12,18 +12,18 @@ SRC-721 transactions must conform to these **required** fields or the transactio
 ```
 {
         "p": "src-721",
-        "v": 1,
+        "v": "1",
         "op": "deploy",
         "name": "Collection Name",      // The display name of the collection
         "symbol": "SYM",                // the symbol for the collection
         "description": "Description",
-        "unique": true,                 // determines if a set of traits must be unique to be valid
+        "unique": true,                 // determines if a set of traits must be unique to be valid [optional]
         "root": "a1b2...e8d9"           // merkle root for a permissioned mint [optional]
         "type": "data:image/png;base64",// mime type of the images used in traits t0-tx
         "image-rendering":"pixelated",  // css property to ensure images are displayed properly [optional]
         "viewbox": "0 0 160 160",       // viewbox to properly see  traits t0-tx
-        "max": 2500,                    // maximum number of mints
-        "lim": 1,                       // limit per mint
+        "max": "2500",                    // maximum number of mints
+        "lim": "1",                       // limit per mint
         "icon": "A16308540544056654000",// CP asset for a collection icon 
         // All t0-tx are optional if the reveal op is planned to be used
         "pubkey": "a1b2...e8d9"         // pubkey for future ops such as reveal [optional]
@@ -38,7 +38,7 @@ SRC-721 transactions must conform to these **required** fields or the transactio
 ```
 {
     "p": "src-721",
-    "v": 1,
+    "v": "1",
     "op": "reveal",
     "symbol": "SYM",
     "sig": "a1b2...e8d9",   // signed hash of data object containing references to traits
@@ -58,6 +58,7 @@ SRC-721 transactions must conform to these **required** fields or the transactio
     "p": "src-721",
     "op": "mint",
     "symbol": "SYM",
+    "amt": "1",         // amount to mint [optional, default=1]
     "proof": "",        // merkle proof, used for a permissioned mint [optional]
     "ts":[0,1,...,y]    // an array with x length wherein each item
                         // represents the index of the trait to use
