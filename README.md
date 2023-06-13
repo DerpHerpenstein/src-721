@@ -18,6 +18,7 @@ SRC-721 transactions must conform to these **required** fields or the transactio
         "symbol": "SYM",                // the symbol for the collection
         "description": "Description",
         "unique": true,                 // determines if a set of traits must be unique to be valid [optional]
+        "wl-token":"A123456789",        // a pointer to the whitelist token [optional]
         "root": "a1b2...e8d9"           // merkle root for a permissioned mint [optional]
         "type": "data:image/png;base64",// mime type of the images used in traits t0-tx
         "image-rendering":"pixelated",  // css property to ensure images are displayed properly [optional]
@@ -58,6 +59,7 @@ SRC-721 transactions must conform to these **required** fields or the transactio
     "p": "src-721",
     "op": "mint",
     "symbol": "SYM",
+    "c":"A123456789",   // a pointer to the deploy collection json cp asset
     "amt": "1",         // amount to mint [optional, default=1]
     "proof": "",        // merkle proof, used for a permissioned mint [optional]
     "ts":[0,1,...,y]    // an array with x length wherein each item
