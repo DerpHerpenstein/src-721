@@ -19,7 +19,6 @@ SRC-721 transactions must conform to these **required** fields or the transactio
         "description": "Description",
         "unique": true,                 // determines if a set of traits must be unique to be valid [optional]
         "wl-token":"A123456789",        // a pointer to the whitelist token [optional]
-        "root": "a1b2...e8d9"           // merkle root for a permissioned mint [optional]
         "type": "data:image/png;base64",// mime type of the images used in traits t0-tx
         "image-rendering":"pixelated",  // css property to ensure images are displayed properly [optional]
         "viewbox": "0 0 160 160",       // viewbox to properly see  traits t0-tx
@@ -27,7 +26,7 @@ SRC-721 transactions must conform to these **required** fields or the transactio
         "lim": "1",                       // limit per mint
         "icon": "A16308540544056654000",// CP asset for a collection icon 
         // All t0-tx are optional if the reveal op is planned to be used
-        "pubkey": "a1b2...e8d9"         // pubkey for future ops such as reveal [optional]
+        "pubkey": "a1b2...e8d9"         // pubkey of the operator for future ops such as reveal [optional]
         "t0": ["A12430899936789156000", "A9676658320305385000"],    // up to x layers of stamp traits (references by CP asset#) containing
         "t1": ["A17140023175661332000", "A6689685157378600000"],    // transparency can be stacked on top of eachother to form a final image
         ...
@@ -42,7 +41,7 @@ SRC-721 transactions must conform to these **required** fields or the transactio
     "v": "1",
     "op": "reveal",
     "symbol": "SYM",
-    "sig": "a1b2...e8d9",   // signed hash of data object containing references to traits
+    "sig": "a1b2...e8d9",   // signed hash of data object containing references to traits [optional] only needed if an operator is used
     "data":{
         "t0": ["A12430899936789156000", "A9676658320305385000"],    // up to x layers of stamp traits (references by CP asset#) containing
         "t1": ["A17140023175661332000", "A6689685157378600000"],    // transparency can be stacked on top of eachother to form a final image
@@ -60,11 +59,23 @@ SRC-721 transactions must conform to these **required** fields or the transactio
     "op": "mint",
     "symbol": "SYM",
     "c":"A123456789",   // a pointer to the deploy collection json cp asset
+    "id":"1"            // ID for this token [optional], if present must be unique, first is considered valid
     "amt": "1",         // amount to mint [optional, default=1]
-    "proof": "",        // merkle proof, used for a permissioned mint [optional]
+    "sig": "",          // used for a permissioned mint  signed(sha256(JSON.stingify(ts)+minterAddress+tokenId) [optional]
+                        // MAY WANT TO USE A truncate the signed hash to minimize mint op size
     "ts":[0,1,...,y]    // an array with x length wherein each item
                         // represents the index of the trait to use
                         // from the deploy mechanism
+}
+```
+
+### Update - updates mutable properties of deploy
+```
+{
+"p": "src-721",
+"op": "update",
+"operator": "1ABC...321", // the bitcoin address of the new operator [optional]
+"price":"10000" // the price for the mint in satoshis [optional]
 }
 ```
 
@@ -79,9 +90,28 @@ It may be desireable to mint a single NFT (that is not part of a collection) bas
                         // represents the CP asset ID 
 }
 ```
+
 ### TRANSFER and USE
 
 SRC-721 transactions are valid counterparty assets and can be use as such.
+
+### Roles
+
+Owner: The address that holds the collection deployment stamp. The owner changes as the stamp is transferred.
+
+Operator: The agent providing signature authorization. The primary function is for the owner to delegate the minting service to handle project issuance. The pubkey in the deploy json data corresponds to the operator's Bitcoin public key.
+
+### Authority Operations
+
+Change Operator: The owner can initiate a protocol operation to change the operator.
+
+Generate Reveal Signature: The owner signs the hash(traits data objects) to obtain a signature. If the first input of the transaction is the owner, no signature is required.
+
+Generate Mint Signature: The owner/operator signs the sha256(JSON.stingify(ts)+minterAddress+tokenId) to obtain a signature. sha256 should be a byte array not hex, to reduce footprint
+
+Note: ****May want to truncate the mint signature to a fraction of the total size to reduce on-chain footprint
+
+
 
 ## SRC-721 Token Requirements
 
