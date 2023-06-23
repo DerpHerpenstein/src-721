@@ -16,6 +16,7 @@ SRC-721 transactions must conform to these **required** fields or the transactio
         "op": "deploy",
         "name": "Collection Name",      // The display name of the collection
         "symbol": "SYM",                // the symbol for the collection
+        "price":"10000",                // price in sats, must be paid to the owner of the collection for a mint to be valid [optiona] 
         "description": "Description",
         "unique": true,                 // determines if a set of traits must be unique to be valid [optional]
         "wl-token":"A123456789",        // a pointer to the whitelist token [optional]
