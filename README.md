@@ -56,6 +56,10 @@ SRC-721 transactions must conform to these **required** fields or the transactio
 }
 ```
 
+### MINT MODES
+There are two main mint modes
+1) Open mint: users provide the traits as part of the mint function. ts must be present, 3 or more UTXOs
+2) Random mint: the reveal function outlines the trait distribution. ts is ignoted, 2 or more UTXOs
 
 ### MINT
 ```
