@@ -16,6 +16,7 @@ SRC-721 transactions must conform to these **required** fields or the transactio
         "op": "deploy",
         "name": "Collection Name",      // The display name of the collection
         "symbol": "SYM",                // the symbol for the collection
+        "price":"10000",                // price in sats, must be paid to the owner of the collection for a mint to be valid [optional]
         "description": "Description",
         "unique": true,                 // determines if a set of traits must be unique to be valid [optional]
         "wl-token":"A123456789",        // a pointer to the whitelist token [optional]
@@ -24,7 +25,7 @@ SRC-721 transactions must conform to these **required** fields or the transactio
         "viewbox": "0 0 160 160",       // viewbox to properly see  traits t0-tx
         "max": "2500",                    // maximum number of mints
         "lim": "1",                       // limit per mint
-        "icon": "A16308540544056654000",// CP asset for a collection icon 
+        "icon": "A16308540544056654000",// CP asset for a collection icon [optional]
         // All t0-tx are optional if the reveal op is planned to be used
         "pubkey": "a1b2...e8d9"         // pubkey of the operator for future ops such as reveal [optional]
         "t0": ["A12430899936789156000", "A9676658320305385000"],    // up to x layers of stamp traits (references by CP asset#) containing
@@ -43,10 +44,14 @@ SRC-721 transactions must conform to these **required** fields or the transactio
     "symbol": "SYM",
     "sig": "a1b2...e8d9",   // signed hash of data object containing references to traits [optional] only needed if an operator is used
     "data":{
+        "s": "Seed-can be any string",                              // seed used for the deterministic generation of traits [optional]
         "t0": ["A12430899936789156000", "A9676658320305385000"],    // up to x layers of stamp traits (references by CP asset#) containing
+        "c0": ["1000", "10000"],                                    // coefficients used to select t0 traits per tokenId [optional]    
         "t1": ["A17140023175661332000", "A6689685157378600000"],    // transparency can be stacked on top of eachother to form a final image
+        "c1": ["4000", "10000"],                                    // coefficients used to select t1 traits per tokenId [optional]     
         ...
-        "tx": ["A12240402677681132000", "A4332886198473102000"]
+        "tx": ["A12240402677681132000", "A4332886198473102000"],
+        "cx": ["7000", "10000"],                                    // coefficients used to select tx traits per tokenId [optional]     
     }
 }
 ```
@@ -57,25 +62,21 @@ SRC-721 transactions must conform to these **required** fields or the transactio
 {
     "p": "src-721",
     "op": "mint",
-    "symbol": "SYM",
+    "symbol": "SYM",    // symbol [optional]
     "c":"A123456789",   // a pointer to the deploy collection json cp asset
-    "id":"1"            // ID for this token [optional], if present must be unique, first is considered valid
-    "amt": "1",         // amount to mint [optional, default=1]
-    "sig": "",          // used for a permissioned mint  signed(sha256(JSON.stingify(ts)+minterAddress+tokenId) [optional]
-                        // MAY WANT TO USE A truncate the signed hash to minimize mint op size
-    "ts":[0,1,...,y]    // an array with x length wherein each item
-                        // represents the index of the trait to use
-                        // from the deploy mechanism
+    "ts":[0,1,...,y]    // an array with x length wherein each item [optional]
+                        // represents the index of the trait to use from the
+                        // deploy mechanism, needed if the mint is open
 }
 ```
 
 ### Update - updates mutable properties of deploy
 ```
 {
-"p": "src-721",
-"op": "update",
-"operator": "1ABC...321", // the bitcoin address of the new operator [optional]
-"price":"10000" // the price for the mint in satoshis [optional]
+    "p": "src-721",
+    "op": "update",
+    "operator": "1ABC...321", // the bitcoin address of the new operator [optional]
+    "price":"10000" // the price for the mint in satoshis [optional]
 }
 ```
 
@@ -104,13 +105,6 @@ Operator: The agent providing signature authorization. The primary function is f
 ### Authority Operations
 
 Change Operator: The owner can initiate a protocol operation to change the operator.
-
-Generate Reveal Signature: The owner signs the hash(traits data objects) to obtain a signature. If the first input of the transaction is the owner, no signature is required.
-
-Generate Mint Signature: The owner/operator signs the sha256(JSON.stingify(ts)+minterAddress+tokenId) to obtain a signature. sha256 should be a byte array not hex, to reduce footprint
-
-Note: ****May want to truncate the mint signature to a fraction of the total size to reduce on-chain footprint
-
 
 
 ## SRC-721 Token Requirements
