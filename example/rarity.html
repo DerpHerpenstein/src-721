@@ -1,0 +1,105 @@
+<html>
+    <head>
+        <script>
+
+            function bufferToHex (buffer) {
+                return [...new Uint8Array (buffer)]
+                    .map (b => b.toString (16).padStart (2, "0"))
+                    .join ("");
+            }
+
+            async function sha256(seed) {
+                const encoder = new TextEncoder();
+                const data = encoder.encode(seed);
+                const hash = await crypto.subtle.digest("SHA-256", data);
+                return hash;
+            }
+
+            async function getTrait(traits, coefficients, seed, id){
+                let layerSeed =  bufferToHex(await sha256(seed+id));
+                layerSeed = BigInt('0x' +layerSeed)%10000n;
+                for(let i=0;i<traits.length;i++)
+                    if(layerSeed <= coefficients[i])
+                        return(i)
+            }
+
+            // generate the desired breakdown based on the coefficients
+            async function generateBreakdown(seedString, tx, ctx, supply){
+                let desired = [ctx[0]*supply/10000];
+                for(let i=1; i< ctx.length; i++){
+                    desired.push((ctx[i]-ctx[i-1])*supply/10000)
+                } 
+
+                // generates an object to hold the breakdown information
+                let breakdown = {seedString: seedString};
+                let allTraits = []; // holds an array of each trait by tokenid-1
+                for(let i=0; i< tx.length; i++)
+                    breakdown[tx[i]] = {actual: 0, desired: desired[i]};
+                
+
+                // generate the actual breakdown with this seed
+                for(let i=0; i< supply; i++){
+                    let tmpT = await getTrait(tx,ctx, seedString, i);
+                    breakdown[tx[tmpT]].actual +=1;
+                }
+
+                return breakdown;
+            }
+
+            async function findBreakdown(tx, ctx, supply){
+                // should use a better option here that results in smaller seeds
+                let multiple = 10000000;
+                let seedString = parseInt(Math.random()*multiple).toString();
+                
+                let breakdown = await generateBreakdown(seedString, tx, ctx, supply);
+                // this can be whatever logic the creator wants to ensure their distribution is good
+                // make sure the lowest 3 traits are exactly equal, brute force generate until we get there
+                while(  breakdown["0"].actual !== breakdown["0"].desired || 
+                        breakdown["1"].actual !== breakdown["1"].desired ||
+                        breakdown["2"].actual !== breakdown["2"].desired)       {
+ 
+                            console.log("Did not meet criteria, trying again with a new seed - this can take a few minutes");
+                            seedString = parseInt(Math.random()*multiple).toString();
+                            breakdown = await generateBreakdown(seedString, tx, ctx, supply);
+
+                }
+                return breakdown;
+            }
+
+
+
+
+
+            
+            async function generateCollectionBreakdown(){
+                let supply = 10000;
+                let t0 =  ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+                let ct0 = [1, 5, 15, 50, 100, 400, 800, 1600, 3200, 10000];
+
+                let t1 =  ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+                let ct1 = [1, 10, 25, 100, 500, 1000, 2000, 3500, 6000, 10000];
+
+               
+                console.log("This will brute force a hash that will results in the first 3 indexes having the exact traits counts specified");
+                console.log("--The more specific the criteria in findBreakdown the longer this will take");
+                console.log("--Just forcing the first 3 to be exact could take hundreds of iterations");
+                let t0Breakdown = await findBreakdown(t0, ct0, supply);
+                console.log("Breakdown for t0 Found!");
+
+                let t1Breakdown = await findBreakdown(t1, ct1, supply);
+                console.log("Breakdown for t1 Found!");
+
+                console.log("t0", t0Breakdown);
+                console.log("t1", t1Breakdown);
+            }
+
+            generateCollectionBreakdown();
+
+
+
+        </script>
+    </head>
+    <body>
+
+    </body>
+</html>
