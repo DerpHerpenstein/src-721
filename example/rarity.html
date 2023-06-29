@@ -34,13 +34,13 @@
                 let breakdown = {seedString: seedString};
                 let allTraits = []; // holds an array of each trait by tokenid-1
                 for(let i=0; i< tx.length; i++)
-                    breakdown[tx[i]] = {actual: 0, desired: desired[i]};
+                    breakdown[i] = {trait: tx[i], actual: 0, desired: desired[i]};
                 
 
                 // generate the actual breakdown with this seed
                 for(let i=0; i< supply; i++){
                     let tmpT = await getTrait(tx,ctx, seedString, i);
-                    breakdown[tx[tmpT]].actual +=1;
+                    breakdown[tmpT].actual +=1;
                 }
 
                 return breakdown;
@@ -73,28 +73,53 @@
             
             async function generateCollectionBreakdown(){
                 let supply = 10000;
-                let t0 =  ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-                let ct0 = [1, 5, 15, 50, 100, 400, 800, 1600, 3200, 10000];
+                let t0 =  [ "A12430899936789156000", "A9676658320305385000","A18077510075916032000",
+                            "A11658634656299940000","A5392423398013345000","A1286945691943942000",
+                            "A15242004153027440000","A17108445705962965000","A10556754146192531000",
+                            "A11749646823701480000"]
+                let c0 = [1, 5, 15, 50, 100, 400, 800, 1600, 3200, 10000];
 
-                let t1 =  ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
-                let ct1 = [1, 10, 25, 100, 500, 1000, 2000, 3500, 6000, 10000];
+                let t1 =  [ "A2991385850656806000", "A4706273261479619000", "A12259525239841251000", 
+                            "A6637199522972696000", "A5436809903081015000", "A17875782000404392000", 
+                            "A8243253424678198000", "A5660289847458725000", "A2413123771027491300", 
+                            "A7790634082518617000"]
+                let c1 = [1, 10, 25, 100, 500, 1000, 2000, 3500, 6000, 10000];
 
                
                 console.log("This will brute force a hash that will results in the first 3 indexes having the exact traits counts specified");
                 console.log("--The more specific the criteria in findBreakdown the longer this will take");
                 console.log("--Just forcing the first 3 to be exact could take hundreds of iterations");
-                let t0Breakdown = await findBreakdown(t0, ct0, supply);
+                let data = {};
+                data.s = [];
+
+                let t0Breakdown = await findBreakdown(t0, c0, supply);
                 console.log("Breakdown for t0 Found!");
 
-                let t1Breakdown = await findBreakdown(t1, ct1, supply);
+                let t1Breakdown = await findBreakdown(t1, c1, supply);
                 console.log("Breakdown for t1 Found!");
 
                 console.log("t0", t0Breakdown);
                 console.log("t1", t1Breakdown);
+
+                data.s.push(t0Breakdown.seedString);
+                data.t0 = t0;
+                data.c0 = c0;
+                data.s.push(t1Breakdown.seedString);
+                data.t1 = t1;
+                data.c1 = c1;
+
+                let reveal = {    
+                    p: "src-721",
+                    v: "1",
+                    op: "reveal",
+                    symbol: "SYM",
+                    data: data
+                }
+
+                console.log("reveal", reveal);
             }
 
             generateCollectionBreakdown();
-
 
 
         </script>

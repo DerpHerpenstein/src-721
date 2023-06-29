@@ -44,7 +44,7 @@ SRC-721 transactions must conform to these **required** fields or the transactio
     "symbol": "SYM",
     "sig": "a1b2...e8d9",   // signed hash of data object containing references to traits [optional] only needed if an operator is used
     "data":{
-        "s": "Seed-can be any string",                              // seed used for the deterministic generation of traits [optional]
+        "s": ["seed0", "seed1", ... "seedx"]                        // seed used for the deterministic generation of traits [optional]
         "t0": ["A12430899936789156000", "A9676658320305385000"],    // up to x layers of stamp traits (references by CP asset#) containing
         "c0": ["1000", "10000"],                                    // coefficients used to select t0 traits per tokenId [optional]    
         "t1": ["A17140023175661332000", "A6689685157378600000"],    // transparency can be stacked on top of eachother to form a final image
