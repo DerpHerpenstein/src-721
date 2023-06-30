@@ -122,12 +122,6 @@ SRC-721 transactions are valid counterparty assets and can be use as such.
 
 2. Operator: The address executes delegated mint through providing signature or directly mint. The primary function is for the owner to delegate the mint service to handle project issuance. 
 
-### Traits Allocation Mode
-There are two main mint modes for traits allocation,
-1. Authorized allocation: A mint transaction, which is either initiated by the operator or containing the operator's signature, incorporates the relevant traits. ts must be present, 3 or more UTXOs
-
-2. Random allocation: the reveal function outlines the traits distribution. ts is ignoted, 2 or more UTXOs
-
 ### Authority Operations
 
 1. Change Parameters: The owner has the ability to initiate a protocol operation to modify the operator, mint price, recipient, mint phase, and mint mode.
@@ -138,6 +132,19 @@ There are two main mint modes for traits allocation,
 
 Note: ****May want to truncate the mint signature to a fraction of the total size to reduce on-chain footprint
 
+### Sale Mode
+
+1. Public Sale: Any address can participate in minting.
+
+2. Whitelist Sale: Only authorized addresses are allowed to mint.
+
+### Traits Allocation Mode
+
+There are two main mint modes for traits allocation,
+1. Authorized allocation: A mint transaction, which is either initiated by the operator or containing the operator's signature, incorporates the relevant traits. ts must be present, 3 or more UTXOs
+
+2. Random allocation: the reveal function outlines the traits distribution. ts is ignoted, 2 or more UTXOs
+
 ### Additional Notes
 
 1. Token ID: If a Token ID is required, it is assigned in the order of valid minting. However, if a Token ID is added in the mint JSON, it would be difficult to effectively implement the combination and switching of mint modes.
@@ -145,6 +152,8 @@ Note: ****May want to truncate the mint signature to a fraction of the total siz
 2. NUM: The maximum number of stamp with the same traits. In order to allow for the existence of Images with the same traits within a collection and prevent multiple mints with the same signature from a single address, we have introduced a variable called "num" to represent the maximum quantity of Images with the same traits. Additionally, the signature data needs to include an indication of which numbered Image with the same traits it corresponds to. If the value of "num" in the deploy JSON is N, then the range of "num" in the signature data is [0, N-1].
 
 ## Mint Modes Combination
+
+Based on the Sale Mode and Traits Allocation Mode, 4 minting modes can be combined, and these 4 modes can be switched interchangeably.
 
 ### Whitelist Sale with Authorized Traits Allocation
 ```
