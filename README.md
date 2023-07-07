@@ -22,7 +22,7 @@ SRC-721 transactions must conform to these **required** fields or the transactio
         "num": "1",                       // the maximum number of stamp with the same traits [optional, default=1]
         "wl": "1",                        // public(0)or whitelist(1) mint phase [optional, default=0]
         "mode": "1",                     //  traits allocation mode, random allocation(0) or authorized allocation(1) [optional, default=0]
-        "operator": "1ABC...321",         // bitcoin address of the operator for whitelist mint [optional]
+        "operators": ["1ABC...321"],         // bitcoin address of the operators for whitelist mint [optional]
         "price": "200000",               // mint fee in satoshis [optional, default=0]
         "recipient": "1ABC...321",       // recipient address of mint fee. must exist and valid address if the price is not 0. 
         "type": "data:image/png;base64",// mime type of the images used in traits t0-tx
@@ -81,7 +81,7 @@ SRC-721 transactions must conform to these **required** fields or the transactio
 {
 "p": "src-721",
 "op": "update",
-"operator": "1ABC...321", // the bitcoin address of the new operator [optional]
+"operators": ["1ABC...321"], // the bitcoin address of the new operators [optional]
 "price":"10000", // the price for the mint in satoshis [optional]
 "recipient": "1ABC...321", // mint fee recipient address [optional]
 "wl": "1",           // public(0) or whitelist(1) mint phase [optional]
