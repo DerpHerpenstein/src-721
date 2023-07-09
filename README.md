@@ -22,7 +22,7 @@ SRC-721 transactions must conform to these **required** fields or the transactio
         "num": "1",                       // the maximum number of stamp with the same traits [optional, default=1]
         "wl": "1",                        // public(0)or whitelist(1) mint phase [optional, default=0]
         "mode": "1",                     //  traits allocation mode, random allocation(0) or authorized allocation(1) [optional, default=0]
-        "operators": ["1ABC...321"],         // bitcoin address of the operators for whitelist mint [optional]
+        "operators": ["1ABC...321"],         // bitcoin addresses of the operators for whitelist mint [optional]
         "price": "200000",               // mint fee in satoshis [optional, default=0]
         "recipient": "1ABC...321",       // recipient address of mint fee. must exist and valid address if the price is not 0. 
         "type": "data:image/png;base64",// mime type of the images used in traits t0-tx
@@ -147,7 +147,7 @@ There are two main mint modes for traits allocation,
 
 ### Additional Notes
 
-1. Token ID: If a Token ID is required, it is assigned in the order of valid minting. However, if a Token ID is added in the mint JSON, it would be difficult to effectively implement the combination and switching of mint modes.
+1. Token ID: If a Token ID is required, it is assigned in the order of valid minting. However, if a Token ID is added in the mint JSON, it would be difficult to effectively implement the combination and switching of mint modes. So it is not a good design to contain the Token ID in the mint json. 
 
 2. NUM: The maximum number of stamp with the same traits. In order to allow for the existence of Images with the same traits within a collection and prevent multiple mints with the same signature from a single address, we have introduced a variable called "num" to represent the maximum quantity of Images with the same traits. Additionally, the signature data needs to include an indication of which numbered Image with the same traits it corresponds to. If the value of "num" in the deploy JSON is N, then the range of "num" in the signature data is [0, N-1].
 
@@ -203,7 +203,6 @@ MultiSig UTXO Amount: at least 3
     "p": "src-721",
     "op": "mint",
     "c": "A123456789",
-    "num": "0"           //[optional, default=0]
     "amt": "1"          // [optional, default=1]
 } 
 ```   
