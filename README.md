@@ -14,21 +14,21 @@ SRC-721 transactions must conform to these **required** fields or the transactio
         "p": "src-721",
         "v": "1",
         "op": "deploy",
-        "name": "Collection Name",      // The display name of the collection
-        "symbol": "SYM",                // the symbol for the collection
+        "name": "Collection Name",       // The display name of the collection
+        "symbol": "SYM",                 // the symbol for the collection
         "description": "Description",
-        "max": "2500",                    // maximum number of mints
-        "lim": "1",                       // limit per mint [optional, default=1]
-        "num": "1",                       // the maximum number of stamp with the same traits [optional, default=1]
-        "wl": "1",                        // public(0)or whitelist(1) mint phase [optional, default=0]
+        "max": "2500",                   // maximum number of mints
+        "lim": "1",                      // limit per mint [optional, default=1]
+        "num": "1",                      // the maximum number of stamp with the same traits [optional, default=1]
+        "wl": "1",                       // public(0)or whitelist(1) mint phase [optional, default=0]
         "mode": "1",                     //  traits allocation mode, random allocation(0) or authorized allocation(1) [optional, default=0]
         "operators": ["1ABC...321"],         // bitcoin addresses of the operators for whitelist mint [optional]
         "price": "200000",               // mint fee in satoshis [optional, default=0]
         "recipient": "1ABC...321",       // recipient address of mint fee. must exist and valid address if the price is not 0. 
-        "type": "data:image/png;base64",// mime type of the images used in traits t0-tx
-        "image-rendering":"pixelated",  // css property to ensure images are displayed properly [optional]
-        "viewbox": "0 0 160 160",       // viewbox to properly see  traits t0-tx
-        "icon": "A16308540544056654000",// CP asset for a collection icon [optional]
+        "type": "data:image/png;base64", // mime type of the images used in traits t0-tx
+        "image-rendering":"pixelated",   // css property to ensure images are displayed properly [optional]
+        "viewbox": "0 0 160 160",        // viewbox to properly see  traits t0-tx
+        "icon": "A16308540544056654000", // CP asset for a collection icon [optional]
         // All t0-tx are optional if the reveal op is planned to be used
         "t0": ["A12430899936789156000", "A9676658320305385000"],    // up to x layers of stamp traits (references by CP asset#) containing
         "t1": ["A17140023175661332000", "A6689685157378600000"],    // transparency can be stacked on top of eachother to form a final image
@@ -43,11 +43,11 @@ SRC-721 transactions must conform to these **required** fields or the transactio
     "p": "src-721",
     "v": "1",
     "op": "reveal",
-    "symbol": "SYM",    // symbol [optional]
-    "c":"A123456789",   // a pointer to the deploy collection json cp asset
+    "symbol": "SYM",        // symbol [optional]
+    "c":"A123456789",       // a pointer to the deploy collection json cp asset
     "sig": "a1b2...e8d9",   // signed hash of data object containing references to traits [optional] only needed if the sender is not the collection owner
     "data":{
-       "s": ["seed0", "seed1", ... "seedx"]                        // seed used for the deterministic generation of traits [optional]
+       "s": ["seed0", "seed1", ... "seedx"]                         // seed used for the deterministic generation of traits [optional]
         "t0": ["A12430899936789156000", "A9676658320305385000"],    // up to x layers of stamp traits (references by CP asset#) containing
         "c0": ["1000", "10000"],                                    // coefficients used to select t0 traits per tokenId [optional]    
         "t1": ["A17140023175661332000", "A6689685157378600000"],    // transparency can be stacked on top of eachother to form a final image
@@ -69,7 +69,7 @@ SRC-721 transactions must conform to these **required** fields or the transactio
     "num": "0"            // The ordinal number of stamps with the same traits,  [optional, default=0]
     "amt": "1",           // amount to mint, value range is 1 to NUM [optional, default=1]
     "sig": "1234...abcd", // used for a permissioned mint signed(sha256(num+JSON.stingify(ts)+userAddress)) [optional]
-                        // MAY WANT TO USE A truncate the signed hash to minimize mint op size
+
     "ts":[0,1,...,y]    // an array with x length wherein each item
                         // represents the index of the trait to use
                         // from the deploy mechanism
@@ -79,13 +79,13 @@ SRC-721 transactions must conform to these **required** fields or the transactio
 ### UPDATE - updates mutable properties of deploy
 ```
 {
-"p": "src-721",
-"op": "update",
-"operators": ["1ABC...321"], // the bitcoin address of the new operators [optional]
-"price":"10000", // the price for the mint in satoshis [optional]
-"recipient": "1ABC...321", // mint fee recipient address [optional]
-"wl": "1",           // public(0) or whitelist(1) mint phase [optional]
-"mode": "1",         //  traits allocation mode, random allocation(0) or authorized allocation(1) [optional]
+    "p": "src-721",
+    "op": "update",
+    "operators": ["1ABC...321"], // the bitcoin address of the new operators [optional]
+    "price":"10000",             // the price for the mint in satoshis [optional]
+    "recipient": "1ABC...321",   // mint fee recipient address [optional]
+    "wl": "1",                   // public(0) or whitelist(1) mint phase [optional]
+    "mode": "1",                 //  traits allocation mode, random allocation(0) or authorized allocation(1) [optional]
 }
 ```
 
@@ -155,16 +155,19 @@ There are two main mint modes for traits allocation,
 
 Based on the Sale Mode and Traits Allocation Mode, 4 minting modes can be combined, and these 4 modes can be switched interchangeably.
 
+**Note: Signatures can be omitted when a dust input from the owner or operator is present.**
+
 ### Whitelist Sale with Authorized Traits Allocation
 ```
 {
     "p": "src-721",
     "op": "mint",
     "c": "A123456789",   
-    "num": "0"           // [optional, default=0]
-    "amt": "1",         // [optional, default=1]
+    "num": "0"            // [optional, default=0]
+    "amt": "1",           // [optional, default=1]
     "ts": [0,1,...,y],
-    "sig": "1234...abcd" // signed(sha256(num+JSON.stingify(ts)+userAddress)). The signature field is not required if the sender is the operator. 
+    "d":["d0","d1".."dy"],// [optional, used to attach data to this nft]
+    "sig": "1234...abcd"  // signed(sha256(num+JSON.stingify(ts)+userAddress)). The signature field is not required if the sender is the operator. 
 } 
 ```   
 MultiSig UTXO Amount: at least 3
@@ -177,6 +180,7 @@ MultiSig UTXO Amount: at least 3
     "c": "A123456789",   
     "num": "0"          // [optional, default=0]
     "amt": "1",         // [optional, default=1]
+    "d":["d0","d1".."dy"],// [optional, used to attach data to this nft]
     "sig": "1234...abcd" // signed(sha256(userAddress)). The signature field is not required if the sender is the operator
 }  
 ```  
@@ -189,10 +193,11 @@ MultiSig UTXO Amount: at least 2
     "p": "src-721",
     "op": "mint",
     "c": "A123456789",   
-    "num": "0"           // [optional, default=0]
-    "amt": "1",         // [optional, default=1]
+    "num": "0"            // [optional, default=0]
+    "amt": "1",           // [optional, default=1]
     "ts": [0,1,...,y],
-    "sig": "1234...abcd" // signed(sha256(num+JSON.stingify(ts)+userAddress)). The signature field is not required if the sender is the operator
+    "d":["d0","d1".."dy"],// [optional, used to attach data to this nft]
+    "sig": "1234...abcd"  // signed(sha256(num+JSON.stingify(ts)+userAddress)). The signature field is not required if the sender is the operator
 } 
 ```   
 MultiSig UTXO Amount: at least 3
@@ -204,6 +209,7 @@ MultiSig UTXO Amount: at least 3
     "op": "mint",
     "c": "A123456789",
     "amt": "1"          // [optional, default=1]
+    "d":["d0","d1".."dy"],// [optional, used to attach data to this nft]
 } 
 ```   
 MultiSig UTXO Amount: at least 2
